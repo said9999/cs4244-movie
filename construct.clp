@@ -10,6 +10,18 @@
 (slot score (default 0))
 )
 
+(deftemplate movie_temp
+(slot index)
+(slot title)
+(multislot categories)
+(multislot tags)
+(multislot casts)
+(slot date)
+(slot is_released (allowed-symbols yes no))
+(slot rate (default 0))
+(slot score (default 0))
+)
+
 (defglobal 
 	?*tag_index* = 1
 	?*cast_index* = 1
