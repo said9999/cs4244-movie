@@ -312,6 +312,7 @@ then
 (declare (salience -50))
 ?display <-(display ?x)
 =>
+(printout t "==================================================================================" crlf)
 (printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
