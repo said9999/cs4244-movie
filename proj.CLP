@@ -375,22 +375,26 @@ then
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;category;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ; Yunjin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;category;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (deftemplate categoryRank
 (slot cat)
 (slot times (default 0))
 (slot average_score(default 0))
 )
 
+
 (deffacts category_list
 (categoryList))
 
-(deffacts loop_time
-(loop 0))
 
 (deffacts loop_time1
+(loop 0))
+
+
+(deffacts loop_time2
 (loop1 0))
+
 
 (deffunction insert_category_ranking (?ratings $?category)
 (if (> (length $?category) 0)
@@ -399,9 +403,16 @@ then
 (insert_category_ranking ?ratings (rest$ $?category))))
 
 
+(deffunction greater-predicate (?value1 ?value2)
+(> ?value1 ?value2))
+
+
+(deffunction equal-predicate (?value1 ?value2)
+(= ?value1 ?value2))
+
 
 (defrule compute_category_rank
-(declare (salience 35))
+(declare (salience 40))
 (state category)
 (favor ?index)
 (movie (index ?index) (categories $?cat) (rate ?rate))
@@ -410,7 +421,7 @@ then
 
 
 (defrule create_category_rank
-(declare (salience 30))
+(declare (salience 35))
 (state category)
 ?temp <- (categoryScore ?cat ?score)
 ?catList <- (categoryList $?list)
@@ -422,7 +433,7 @@ then
 (assert (categoryList (create$ $?list ?cat))))
 
 (defrule update_category_rank
-(declare (salience 25))
+(declare (salience 30))
 (state category)
 ?temp <- (categoryScore ?cat ?score)
 ?catList <- (categoryList $?list)
@@ -433,17 +444,8 @@ then
 (retract ?temp))
 
 
-
-(deffunction greater-predicate (?value1 ?value2)
-(> ?value1 ?value2))
-
-
-(deffunction equal-predicate (?value1 ?value2)
-(= ?value1 ?value2))
-
-
 (defrule find-max-value
-(declare (salience 20))
+(declare (salience 25))
 (state category)
 ?loop_time <- (loop ?loop)
 (test (< ?loop 3))
@@ -460,9 +462,8 @@ then
 (retract ?cate1))
 
 
-
 (defrule ask_category
-(declare (salience 15))
+(declare (salience 20))
 (state category)
 ?top <- (top_3 ?cat)
 ?high <- (loop1 ?loop)
@@ -477,9 +478,8 @@ then
 (assert (loop1 (+ ?loop 1))))
 
 
-
 (defrule destruct_temporary_fact
-(declare (salience 10))
+(declare (salience 15))
 (state category)
 ?f1 <-(categoryRank (cat ?cat) (times ?time) (average_score ?score))
 =>
@@ -487,7 +487,7 @@ then
 
 
 (defrule category_display
-(declare (salience 5))
+(declare (salience 10))
 ?state <-(state category)
 =>
 (printout t "1. top10 2. all 3. continue 4. end" crlf)
@@ -506,7 +506,7 @@ then
 
 
 (defrule destruct_control_variable
-(declare (salience 0))
+(declare (salience 5))
 (state category)
 ?f1<-(loop1 ?loop1&:(= ?loop1 3))
 ?f2<-(loop  ?loop&:(= ?loop 3))
