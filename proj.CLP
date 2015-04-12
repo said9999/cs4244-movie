@@ -1,4 +1,3 @@
-
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
@@ -131,19 +130,7 @@ then
 ?*tagscore2* = 0
 ?*tagscore3* = 0
 ?*tagscore4* = 0
-?*tagscore5* = 0
-?*scorelist* = (create$)
-?*top1score* = 0
-?*top2score* = 0
-?*top3score* = 0
-?*top4score* = 0
-?*top5score* = 0
-?*top6score* = 0
-?*top7score* = 0
-?*top8score* = 0
-?*top9score* = 0
-?*top10score* = 0
-?*top50score* = 0)
+?*tagscore5* = 0)
 
 
 ;;compute category score
@@ -206,127 +193,39 @@ then
 (modify ?movie (score ?total))
 (modify ?moviecomputed (istagcomputed yes)))
 
-;; sort score
-(defrule createscorelist
+(defrule displaytopN
 (declare (salience -30))
-(display ?x)
-?move<-(movie (index ?i) (is_released no) (score ?score))
-?moviecomputed<-(moviecomputed (index ?i) (iscatcomputed yes))
-=>
-(bind ?*scorelist* (insert$ ?*scorelist* (+ (length$ ?*scorelist*) 1) ?score))
-(printout t "FUCK")
-(printout t ?*scorelist*))
-
-
-(deffunction sortscore()
-(bind ?*scorelist* (sort < ?*scorelist*))
-(bind ?*top1score* (nth$ 1 ?*scorelist*))
-(bind ?*top2score* (nth$ 2 ?*scorelist*))
-(bind ?*top3score* (nth$ 3 ?*scorelist*))
-(bind ?*top4score* (nth$ 4 ?*scorelist*))
-(bind ?*top5score* (nth$ 5 ?*scorelist*))
-(bind ?*top6score* (nth$ 6 ?*scorelist*))
-(bind ?*top7score* (nth$ 7 ?*scorelist*))
-(bind ?*top8score* (nth$ 8 ?*scorelist*))
-(bind ?*top9score* (nth$ 9 ?*scorelist*))
-(bind ?*top10score* (nth$ 10 ?*scorelist*))
-(bind ?*top50score* (nth$ 50 ?*scorelist*))
-(bind ?*scorelist* (create$))
-0)
-
-
-(defrule sortscore
-(declare (salience -40))
-(display ?x)
-=>
-(sortscore))
-
-
-
-;;(defrule displaytop1
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top1score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop2
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top2score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop3
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top3score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop4
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top4score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop5
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top5score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop6
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top6score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop7
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top7score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop8
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top8score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop9
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top9score*)then(printout t ?title " " ?score crlf)))
-
-(defrule displaytop10
-(declare (salience -50))
+?count <-(count ?counter)
+(test (> ?counter 0))
 (display top10)
-(movie (is_released no) (score ?score) (title ?title))
+?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
+(not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
 =>
-(if(>= ?score ?*top10score*)then(printout t ?title " " ?score crlf)))
+(printout t ?title " " ?score crlf)
+(retract ?top)
+(retract ?count)
+(assert (count (- ?counter 1)))
+(assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))))
 
-(defrule displaytop50
-(declare (salience -50))
-(display top50)
-(movie (is_released no) (score ?score) (title ?title))
-(test (>= ?score ?*top50score*))
+(defrule putback
+(declare (salience -40))
+?movie_temp<-(movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
 =>
-(printout t ?title crlf))
+(assert (movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
+(retract ?movie_temp))
 
 (defrule displayall
-(declare (salience -50))
+(declare (salience -30))
 (display all)
-(movie (title ?title) (is_released no))
+?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
+(not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
+?count <-(count ?counter)
 =>
-(printout t ?title crlf))
+(printout t ?title " " ?score crlf)
+(retract ?top)
+(assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
+(retract ?count)
+(assert (count (+ ?counter 1))))
 
 
 
@@ -452,9 +351,11 @@ then
 (bind ?line (read))
 (switch ?line
 (case 1 then
-(assert (display top10)))
+(assert (display top10))
+(assert (count 10)))
 (case 2 then
-(assert (display all)))
+(assert (display all))
+(assert (count 0)))
 (case 3 then
 (assert (op continue)))
 (case 4 then
