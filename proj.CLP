@@ -316,10 +316,14 @@ then
 (bind ?line (read))
 (switch ?line
 (case 1 then
+(printout t crlf)
+(printout t "=========================================top10=========================================" crlf)
 (retract ?display)
 (assert (display top10))
 (assert (count 10)))
 (case 2 then
+(printout t crlf)
+(printout t "=========================================all=========================================" crlf)
 (retract ?display)
 (assert (display all))
 (assert (count 209)))
