@@ -302,7 +302,29 @@ then
 (assert (count (- ?counter 1))))
 
 
-
+(defrule post_display
+(declare (salience -50))
+?display <-(display ?x)
+=>
+(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(bind ?line (read))
+(switch ?line
+(case 1 then
+(retract ?display)
+(assert (display top10))
+(assert (count 10)))
+(case 2 then
+(retract ?display)
+(assert (display all))
+(assert (count 209)))
+(case 3 then
+(assert (op continue)))
+(case 4 then
+(retract ?display)
+(assert (state end))
+(assert (op continue)))
+(case 5 then
+(halt))))
 
 
 
