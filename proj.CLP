@@ -1,8 +1,17 @@
+(defrule start
+?state <-(state movie)
+=>
+(printout t crlf)
+(printout t "======================"crlf)
+(printout t "WELCOME TO CINEMA GURU"crlf)
+(printout t "======================"crlf)
+(printout t crlf))
+
+
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
 =>
-(printout t ?s crlf)
 (switch ?s
 (case movie then
 (retract ?state)
@@ -128,6 +137,11 @@ then
 (assert (state end))
 (assert (op continue)))
 (case 5 then
+(printout t crlf)
+(printout t "==========================================" crlf)
+(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
+(printout t "==========================================" crlf)
+(printout t crlf)
 (halt))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAST;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,7 +204,7 @@ then
 (printout t "=========================================top10=========================================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 209))
+(assert (count 208))
 (printout t crlf)
 (printout t "==========================================all=========================================" crlf))
 (case 3 then
@@ -198,6 +212,11 @@ then
 (assert (state end))
 (assert (op continue)))
 (case 4 then
+(printout t crlf)
+(printout t "==========================================" crlf)
+(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
+(printout t "==========================================" crlf)
+(printout t crlf)
 (halt))))
 
 
@@ -316,8 +335,8 @@ then
 ?display <-(display ?x)
 ?state <- (state ?s)
 =>
-(printout t "==================================================================================" crlf)
-(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(printout t "=======================================================================================" crlf)
+(printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
@@ -328,7 +347,7 @@ then
 (assert (count 10)))
 (case 2 then
 (printout t crlf)
-(printout t "=========================================all=========================================" crlf)
+(printout t "=========================================all===========================================" crlf)
 (retract ?display)
 (assert (display all))
 (assert (count 209)))
@@ -340,6 +359,11 @@ then
 (assert (state end))
 (assert (op continue)))
 (case 5 then
+(printout t crlf)
+(printout t "==========================================" crlf)
+(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
+(printout t "==========================================" crlf)
+(printout t crlf)
 (halt))))
 
 
@@ -479,6 +503,11 @@ then
 (assert (state end))
 (assert (op continue)))
 (case 5 then
+(printout t crlf)
+(printout t "==========================================" crlf)
+(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
+(printout t "==========================================" crlf)
+(printout t crlf)
 (halt))))
 
 
