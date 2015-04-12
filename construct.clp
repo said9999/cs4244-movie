@@ -10,10 +10,13 @@
 (slot score (default 0))
 )
 
-(defglobal
-?*x* = 1
-?*ct* = 0
-?*list* = (create$))
+(defglobal 
+	?*tag_index* = 1
+	?*cast_index* = 1
+	?*favor_count* = 0
+	?*count* = 0
+	?*tag_list* = (create$)
+	?*cast_list* = (create$))
 
 (deffacts 2014_movie_raw
 (movie (index 1)(title "Transformers: Age of Extinction")(categories Action Adventure Sci-Fi)(tags "blockbuster" "critically bashed" "based on toy" "bounty hunter" "cia")(casts "Mark Wahlberg" "Nicola Peltz" "Jack Reynor")(date "26 June 2014")(is_released 2014_movie_raw)(rate 5.8)(score 0))

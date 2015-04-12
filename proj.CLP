@@ -24,7 +24,7 @@
 (if (> (length ?movielist) 0)
 then
 (assert (favor (first$ ?movielist)))
-(bind ?*ct* (+ ?*ct* 1)) ;;modified by chenxi
+(bind ?*favor_count* (+ ?*favor_count* 1)) ;;modified by chenxi
 (insert_favor_movies (rest$ ?movielist))))
 
 (defrule ask_movies
@@ -52,72 +52,132 @@ then
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;TAG;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftemplate tag_list
-(slot tag_name)
-(slot tag_index))
-
-(deftemplate temp
-(slot count))
+	(slot tag_name)
+	(slot tag_index))
 
 (defrule ask_tag
-(state tag)
-(exists (favor ?))
-=>
-(printout t "Please enter your 5 favorite tags" crlf)
-(assert (state tag_print)))
+	(state tag)
+	(exists (favor ?))
+	=>
+	(printout t "Please enter your 5 favorite tags by index ordered by preference, seperated by space" crlf)
+	(printout t "For example: 1 2 3 4 5 (tag 1 is the most favorite)" crlf)
+	(bind ?*count* ?*favor_count*)
+	(assert (state tag_print)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MODIFIED
-
-(deffunction format_tag_display (?tag ?index)
-(loop-for-count (?cnt 1 (- 30 (str-length ?tag))) do
-(printout t " "))
-(if (= 0 (mod ?index 2))
-then
-(printout t "" crlf)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deffunction format_display (?content ?index)
+	(loop-for-count (?cnt 1 (- (- 30 (str-length ?content)) (str-length (implode$ (create$ ?index))))) do
+		(printout t " "))
+	(if (evenp ?index)
+		then
+		(printout t "" crlf)))
 
 (defrule insert_tag
-(state tag_print)
-(favor ?f)
-(movie (index ?f)(tags $?tag_name))
-(test (> ?*ct* 0))
-=>
-(bind ?listlen (length $?tag_name))
-(loop-for-count (?cnt 1 ?listlen) do
-(bind ?curtag (nth$ ?cnt ?tag_name))
-(if (not (subsetp (create$ ?curtag) ?*list*))
-then
-(bind ?*list* (insert$ ?*list* (+ (length ?*list*) 1) ?curtag))
-(assert (tag_list (tag_name ?curtag)(tag_index ?*x*)))
-(printout t ?*x* "." ?curtag)
-(format_tag_display ?curtag ?*x*)
-(bind ?*x* (+ ?*x* 1))))
-(bind ?*ct* (+ ?*ct* 1)))
-
+	(state tag_print)
+	(favor ?f)
+	(movie (index ?f)(tags $?tag_name))
+	(test (> ?*count* 0))
+	=>
+	(bind ?listlen (length $?tag_name))
+	(loop-for-count (?cnt 1 ?listlen) do
+		(bind ?curtag (nth$ ?cnt ?tag_name))
+		(if (not (subsetp (create$ ?curtag) ?*tag_list*))
+			then
+		(bind ?*tag_list* (insert$ ?*tag_list* (+ (length ?*tag_list*) 1) ?curtag))
+		(assert (tag_list (tag_name ?curtag)(tag_index ?*tag_index*)))
+		(printout t ?*tag_index* "." ?curtag)
+		(format_display ?curtag ?*tag_index*)
+		(bind ?*tag_index* (+ ?*tag_index* 1))))
+	(bind ?*count* (- ?*count* 1)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffunction insert_favor_tags (?taglist)
-(loop-for-count (?cnt 1 (length ?taglist)) do
-(bind ?cur (nth$ ?cnt ?taglist))
-(assert (tag ?cur (- 6 ?cnt)))))
+	(loop-for-count (?cnt 1 (length ?taglist)) do
+		(bind ?cur (nth$ ?cnt ?taglist))
+		(assert (tag ?cur (- 6 ?cnt)))))
 
 (defrule continue_ask_tag
-(test (= ?*ct* 0))
-?state <- (state tag_print)
-=>
-(retract ?state)
-(bind ?line (readline))
-(insert_favor_tags (explode$ ?line))
-(printout t "1. top10 2. all 3. continue 4. end" crlf)
-(bind ?action (readline))
-(switch ?action
-(case 1 then
-(assert (display top10)))
-(case 2 then
-(assert (display all)))
-(case 3 then
-(assert (op continue)))
-(case 4 then
-(assert (restart)))))
+	(test (= ?*count* 0))
+	?state <- (state tag_print)
+	=>
+	(retract ?state)
+	(if (evenp ?*tag_index*)
+		then
+		(printout t "" crlf))
+	(bind ?line (readline))
+	(insert_favor_tags (explode$ ?line))
+	(printout t "1. top10 2. all 3. continue 4. end" crlf)
+	(bind ?action (read))
+	(switch ?action
+		(case 1 then
+			(assert (display top10)))
+		(case 2 then
+			(assert (display all)))
+		(case 3 then
+			(assert (op continue)))
+		(case 4 then
+			(assert (restart)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAST;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deftemplate cast_list
+	(slot cast_name)
+	(slot cast_index))
+
+(defrule ask_cast
+	(state cast)
+	(exists (favor ?))
+	=>
+	(printout t "Please enter your 5 favorite casts by index ordered by preference, seperated by space" crlf)
+	(printout t "For example: 1 2 3 4 5 (cast 1 is the most favorite)" crlf)
+	(bind ?*count* ?*favor_count*)
+	(assert (state cast_print)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule insert_cast
+	(state cast_print)
+	(favor ?f)
+	(movie (index ?f)(casts $?cast_name))
+	(test (> ?*count* 0))
+	=>
+	(bind ?listlen (length $?cast_name))
+	(loop-for-count (?cnt 1 ?listlen) do
+		(bind ?curcast (nth$ ?cnt ?cast_name))
+		(if (not (subsetp (create$ ?curcast) ?*cast_list*))
+			then
+		(bind ?*cast_list* (insert$ ?*cast_list* (+ (length ?*cast_list*) 1) ?curcast))
+		(assert (cast_list (cast_name ?curcast)(cast_index ?*cast_index*)))
+		(printout t ?*cast_index* "." ?curcast)
+		(format_display ?curcast ?*cast_index*)
+		(bind ?*cast_index* (+ ?*cast_index* 1))))
+	(bind ?*count* (- ?*count* 1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deffunction insert_favor_casts (?castlist)
+	(loop-for-count (?cnt 1 (length ?castlist)) do
+		(bind ?cur (nth$ ?cnt ?castlist))
+		(assert (cast ?cur (- 6 ?cnt)))))
+
+(defrule continue_ask_cast
+	(test (= ?*count* 0))
+	?state <- (state cast_print)
+	=>
+	(retract ?state)
+	(if (evenp ?*cast_index*)
+		then
+		(printout t "" crlf))
+	(bind ?line (readline))
+	(insert_favor_casts (explode$ ?line))
+	(printout t "1. top10 2. all 3. continue 4. end" crlf)
+	(bind ?action (read))
+	(switch ?action
+		(case 1 then
+			(assert (display top10)))
+		(case 2 then
+			(assert (display all)))
+		(case 3 then
+			(assert (op continue)))
+		(case 4 then
+			(assert (restart)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;compute score and display;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;define global
