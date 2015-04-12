@@ -293,12 +293,13 @@ then
 ?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
 (not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
 ?count <-(count ?counter)
+(test (> ?counter 0))
 =>
 (printout t ?title " " ?score crlf)
 (retract ?top)
 (assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
 (retract ?count)
-(assert (count (+ ?counter 1))))
+(assert (count (- ?counter 1))))
 
 
 
@@ -428,7 +429,7 @@ then
 (assert (count 10)))
 (case 2 then
 (assert (display all))
-(assert (count 0)))
+(assert (count 209)))
 (case 3 then
 (assert (op continue)))
 (case 4 then
