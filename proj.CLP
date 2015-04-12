@@ -1,49 +1,3 @@
-(deftemplate movie
-(slot index)
-(slot title)
-(multislot categories)
-(multislot tags)
-(multislot casts)
-(slot date)
-(slot is_released (allowed-symbols yes no))
-(slot rate (default 0))
-(slot score (default 0))
-)
-
-(defglobal
-?*x* = 1
-?*ct* = 0
-?*list* = (create$))
-
-(deffacts movie2014
-(movie (index 1)(title "Planes: Fire &amp; Rescue")(categories Animation Adventure Comedy)(tags "fire" "rescue" "battle" "forest" "firefighting")(casts "Dane Cook" "Ed Harris" "Julie Bowen")(date "4 September 2014")(is_released yes)(rate 5.9)(score 0))
-(movie (index 2)(title "A Walk Among the Tombstones")(categories Crime Drama Mystery)(tags "drug dealer" "private investigator" "brooklyn new york city" "violence" "murder of wife")(casts "Liam Neeson" "Dan Stevens" "David Harbour")(date "18 September 2014")(is_released yes)(rate 6.6)(score 0))
-(movie (index 3)(title "Lone Survivor")(categories Action Biography Drama)(tags "navy seal" "pashtunwali" "commando unit" "afghanistan" "fight")(casts "Peter Berg" "Mark Wahlberg" "Taylor Kitsch")(date "13 February 2014")(is_released yes)(rate 7.6)(score 0))
-(movie (index 4)(title "Ouija")(categories Horror)(tags "ouija" "spirit" "ouija board" "swimming pool" "drowning")(casts "Olivia Cooke" "Ana Coto" "Daren Kagasoff")(date "23 October 2014")(is_released yes)(rate 4.4)(score 0))
-(movie (index 5)(title "The Grand Budapest Hotel")(categories Adventure Comedy Drama)(tags "first person narration" "hotel" "painting" "mentor protege relationship" "pastry shop")(casts "Ralph Fiennes" "F. Murray Abraham" "Mathieu Amalric")(date "20 March 2014")(is_released yes)(rate 8.1)(score 0))
-(movie (index 6)(title "Neighbors")(categories Comedy)(tags "lesbian kiss" "sex in a chair" "fraternity" "friendship" "one word title")(casts "Seth Rogen" "Rose Byrne" "Zac Efron")(date "8 May 2014")(is_released no)(rate 6.4)(score 0))
-(movie (index 7)(title "Pompeii")(categories Action Adventure Drama)(tags "pompeii" "roman" "senator" "slave" "arena")(casts "Kit Harington" "Emily Browning" "Kiefer Sutherland")(date "20 February 2014")(is_released no)(rate 5.6)(score 0))
-(movie (index 8)(title "Into the Storm")(categories Action Thriller)(tags "storm" "tornado" "danger" "graduation" "storm chaser")(casts "Richard Armitage" "Sarah Wayne Callies" "Matt Walsh")(date "7 August 2014")(is_released no)(rate 5.9)(score 0))
-(movie (index 9)(title "Xi yan")(categories Comedy Drama Romance)(tags "marriage of convenience" "gay couple" "gay son" "marriage pressure" "asian man white man relationship")(casts "Ang Lee" "Neil Peng" "Winston Chao")(date "4 August 1993")(is_released no)(rate 7.7)(score 0))
-(movie (index 10)(title "Blended")(categories Comedy Romance)(tags "children" "date" "blind date" "daughter" "son")(casts "Ivan Menchell" "Adam Sandler" "Drew Barrymore")(date "5 June 2014")(is_released no)(rate 6.5)(score 0))
-)
-
-(deffacts movie2015
-(movie (index 11)(title "Foxcatcher")(categories Biography Drama Sport)(tags "domination" "olympics" "training" "brother" "wrestler")(casts "E. Max Frye" "Steve Carell" "Channing Tatum")(date "16 January 2015")(is_released no)(rate 7.2)(score 0))
-(movie (index 12)(title "Paul Blart: Mall Cop 2")(categories Action Comedy)(tags "sequel" "character name in title")(casts "Kevin James" "Nick Bakay" "Kevin James")(date "7 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 13)(title "Unlucky Plaza")(categories Comedy Crime Drama)(tags )(casts "Jeffrey Quizon" "Adrian Pang" "Judee Tan")(date "16 April 2015")(is_released no)(rate 6.9)(score 0))
-(movie (index 14)(title "Avengers: Age of Ultron")(categories Action Adventure Fantasy)(tags "marvel cinematic universe" "superhero team" "based on comic book" "superhero" "captain america")(casts "Joss Whedon" "Robert Downey Jr." "Chris Evans")(date "23 April 2015")(is_released no)(rate 0)(score 0))
-(movie (index 15)(title "Hot Pursuit")(categories Action Comedy)(tags )(casts "David Feeney" "Reese Witherspoon" "Sofía Vergara")(date "7 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 16)(title "Pitch Perfect 2")(categories Comedy Music)(tags "sequel" "number in title")(casts "Anna Kendrick" "Rebel Wilson" "Hailee Steinfeld")(date "14 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 17)(title "Pixels")(categories Action Comedy Sci-Fi)(tags "based on short film" "new york city" "one word title")(casts "Adam Sandler" "Kevin James" "Michelle Monaghan")(date "3 September 2015")(is_released no)(rate 0)(score 0))
-(movie (index 18)(title "Mad Max: Fury Road")(categories Action Adventure Thriller)(tags "inbetwequel" "peak oil" "dark future" "future" "post apocalypse")(casts "George Miller" "Brendan McCarthy" "Tom Hardy")(date "14 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 19)(title "Jurassic World")(categories Action Adventure Sci-Fi)(tags "theme park" "dinosaur" "t rex" "velociraptor" "genetic engineering")(casts "Chris Pratt" "Judy Greer" "Ty Simpkins")(date "11 June 2015")(is_released no)(rate 0)(score 0))
-(movie (index 20)(title "Minions")(categories Animation Comedy Family)(tags )(casts "Kyle Balda" "Chris Renaud" "Pierre Coffin")(date "18 June 2015")(is_released no)(rate 0)(score 0))
-)
-
-(deffacts default_fact
-(state movie))
-
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
@@ -57,6 +11,9 @@
 (assert (state tag)))
 (case tag then
 (retract ?state)
+(assert (state cast)))
+(case cast then
+(retract ?state)
 (assert (state end)))
 (case end then
 (retract ?state)
@@ -67,7 +24,7 @@
 (if (> (length ?movielist) 0)
 then
 (assert (favor (first$ ?movielist)))
-(bind ?*ct* (+ ?*ct* 1)) ;;modified by chenxi
+(bind ?*favor_count* (+ ?*favor_count* 1)) ;;modified by chenxi
 (insert_favor_movies (rest$ ?movielist))))
 
 (defrule ask_movies
@@ -95,72 +52,132 @@ then
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;TAG;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftemplate tag_list
-(slot tag_name)
-(slot tag_index))
-
-(deftemplate temp
-(slot count))
+	(slot tag_name)
+	(slot tag_index))
 
 (defrule ask_tag
-(state tag)
-(exists (favor ?))
-=>
-(printout t "Please enter your 5 favorite tags" crlf)
-(assert (state tag_print)))
+	(state tag)
+	(exists (favor ?))
+	=>
+	(printout t "Please enter your 5 favorite tags by index ordered by preference, seperated by space" crlf)
+	(printout t "For example: 1 2 3 4 5 (tag 1 is the most favorite)" crlf)
+	(bind ?*count* ?*favor_count*)
+	(assert (state tag_print)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;MODIFIED
-
-(deffunction format_tag_display (?tag ?index)
-(loop-for-count (?cnt 1 (- 30 (str-length ?tag))) do
-(printout t " "))
-(if (= 0 (mod ?index 2))
-then
-(printout t "" crlf)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deffunction format_display (?content ?index)
+	(loop-for-count (?cnt 1 (- (- 30 (str-length ?content)) (str-length (implode$ (create$ ?index))))) do
+		(printout t " "))
+	(if (evenp ?index)
+		then
+		(printout t "" crlf)))
 
 (defrule insert_tag
-(state tag_print)
-(favor ?f)
-(movie (index ?f)(tags $?tag_name))
-(test (> ?*ct* 0))
-=>
-(bind ?listlen (length $?tag_name))
-(loop-for-count (?cnt 1 ?listlen) do
-(bind ?curtag (nth$ ?cnt ?tag_name))
-(if (not (subsetp (create$ ?curtag) ?*list*))
-then
-(bind ?*list* (insert$ ?*list* (+ (length ?*list*) 1) ?curtag))
-(assert (tag_list (tag_name ?curtag)(tag_index ?*x*)))
-(printout t ?*x* "." ?curtag)
-(format_tag_display ?curtag ?*x*)
-(bind ?*x* (+ ?*x* 1))))
-(bind ?*ct* (+ ?*ct* 1)))
-
+	(state tag_print)
+	(favor ?f)
+	(movie (index ?f)(tags $?tag_name))
+	(test (> ?*count* 0))
+	=>
+	(bind ?listlen (length $?tag_name))
+	(loop-for-count (?cnt 1 ?listlen) do
+		(bind ?curtag (nth$ ?cnt ?tag_name))
+		(if (not (subsetp (create$ ?curtag) ?*tag_list*))
+			then
+		(bind ?*tag_list* (insert$ ?*tag_list* (+ (length ?*tag_list*) 1) ?curtag))
+		(assert (tag_list (tag_name ?curtag)(tag_index ?*tag_index*)))
+		(printout t ?*tag_index* "." ?curtag)
+		(format_display ?curtag ?*tag_index*)
+		(bind ?*tag_index* (+ ?*tag_index* 1))))
+	(bind ?*count* (- ?*count* 1)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffunction insert_favor_tags (?taglist)
-(loop-for-count (?cnt 1 (length ?taglist)) do
-(bind ?cur (nth$ ?cnt ?taglist))
-(assert (tag ?cur (- 6 ?cnt)))))
+	(loop-for-count (?cnt 1 (length ?taglist)) do
+		(bind ?cur (nth$ ?cnt ?taglist))
+		(assert (tag ?cur (- 6 ?cnt)))))
 
 (defrule continue_ask_tag
-(test (= ?*ct* 0))
-?state <- (state tag_print)
-=>
-(retract ?state)
-(bind ?line (readline))
-(insert_favor_tags (explode$ ?line))
-(printout t "1. top10 2. all 3. continue 4. end" crlf)
-(bind ?action (readline))
-(switch ?action
-(case 1 then
-(assert (display top10)))
-(case 2 then
-(assert (display all)))
-(case 3 then
-(assert (op continue)))
-(case 4 then
-(assert (restart)))))
+	(test (= ?*count* 0))
+	?state <- (state tag_print)
+	=>
+	(retract ?state)
+	(if (evenp ?*tag_index*)
+		then
+		(printout t "" crlf))
+	(bind ?line (readline))
+	(insert_favor_tags (explode$ ?line))
+	(printout t "1. top10 2. all 3. continue 4. end" crlf)
+	(bind ?action (read))
+	(switch ?action
+		(case 1 then
+			(assert (display top10)))
+		(case 2 then
+			(assert (display all)))
+		(case 3 then
+			(assert (op continue)))
+		(case 4 then
+			(assert (restart)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAST;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deftemplate cast_list
+	(slot cast_name)
+	(slot cast_index))
+
+(defrule ask_cast
+	(state cast)
+	(exists (favor ?))
+	=>
+	(printout t "Please enter your 5 favorite casts by index ordered by preference, seperated by space" crlf)
+	(printout t "For example: 1 2 3 4 5 (cast 1 is the most favorite)" crlf)
+	(bind ?*count* ?*favor_count*)
+	(assert (state cast_print)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defrule insert_cast
+	(state cast_print)
+	(favor ?f)
+	(movie (index ?f)(casts $?cast_name))
+	(test (> ?*count* 0))
+	=>
+	(bind ?listlen (length $?cast_name))
+	(loop-for-count (?cnt 1 ?listlen) do
+		(bind ?curcast (nth$ ?cnt ?cast_name))
+		(if (not (subsetp (create$ ?curcast) ?*cast_list*))
+			then
+		(bind ?*cast_list* (insert$ ?*cast_list* (+ (length ?*cast_list*) 1) ?curcast))
+		(assert (cast_list (cast_name ?curcast)(cast_index ?*cast_index*)))
+		(printout t ?*cast_index* "." ?curcast)
+		(format_display ?curcast ?*cast_index*)
+		(bind ?*cast_index* (+ ?*cast_index* 1))))
+	(bind ?*count* (- ?*count* 1)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deffunction insert_favor_casts (?castlist)
+	(loop-for-count (?cnt 1 (length ?castlist)) do
+		(bind ?cur (nth$ ?cnt ?castlist))
+		(assert (cast ?cur (- 6 ?cnt)))))
+
+(defrule continue_ask_cast
+	(test (= ?*count* 0))
+	?state <- (state cast_print)
+	=>
+	(retract ?state)
+	(if (evenp ?*cast_index*)
+		then
+		(printout t "" crlf))
+	(bind ?line (readline))
+	(insert_favor_casts (explode$ ?line))
+	(printout t "1. top10 2. all 3. continue 4. end" crlf)
+	(bind ?action (read))
+	(switch ?action
+		(case 1 then
+			(assert (display top10)))
+		(case 2 then
+			(assert (display all)))
+		(case 3 then
+			(assert (op continue)))
+		(case 4 then
+			(assert (restart)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;compute score and display;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;define global
@@ -173,19 +190,7 @@ then
 ?*tagscore2* = 0
 ?*tagscore3* = 0
 ?*tagscore4* = 0
-?*tagscore5* = 0
-?*scorelist* = (create$)
-?*top1score* = 0
-?*top2score* = 0
-?*top3score* = 0
-?*top4score* = 0
-?*top5score* = 0
-?*top6score* = 0
-?*top7score* = 0
-?*top8score* = 0
-?*top9score* = 0
-?*top10score* = 0
-?*top50score* = 0)
+?*tagscore5* = 0)
 
 
 ;;compute category score
@@ -248,127 +253,39 @@ then
 (modify ?movie (score ?total))
 (modify ?moviecomputed (istagcomputed yes)))
 
-;; sort score
-(defrule createscorelist
+(defrule displaytopN
 (declare (salience -30))
-(display ?x)
-?move<-(movie (index ?i) (is_released no) (score ?score))
-?moviecomputed<-(moviecomputed (index ?i) (iscatcomputed yes))
-=>
-(bind ?*scorelist* (insert$ ?*scorelist* (+ (length$ ?*scorelist*) 1) ?score))
-(printout t "FUCK")
-(printout t ?*scorelist*))
-
-
-(deffunction sortscore()
-(bind ?*scorelist* (sort < ?*scorelist*))
-(bind ?*top1score* (nth$ 1 ?*scorelist*))
-(bind ?*top2score* (nth$ 2 ?*scorelist*))
-(bind ?*top3score* (nth$ 3 ?*scorelist*))
-(bind ?*top4score* (nth$ 4 ?*scorelist*))
-(bind ?*top5score* (nth$ 5 ?*scorelist*))
-(bind ?*top6score* (nth$ 6 ?*scorelist*))
-(bind ?*top7score* (nth$ 7 ?*scorelist*))
-(bind ?*top8score* (nth$ 8 ?*scorelist*))
-(bind ?*top9score* (nth$ 9 ?*scorelist*))
-(bind ?*top10score* (nth$ 10 ?*scorelist*))
-(bind ?*top50score* (nth$ 50 ?*scorelist*))
-(bind ?*scorelist* (create$))
-0)
-
-
-(defrule sortscore
-(declare (salience -40))
-(display ?x)
-=>
-(sortscore))
-
-
-
-;;(defrule displaytop1
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top1score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop2
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top2score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop3
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top3score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop4
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top4score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop5
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top5score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop6
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top6score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop7
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top7score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop8
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top8score*)then(printout t ?title " " ?score crlf)));;
-
-;;(defrule displaytop9
-;;(declare (salience -50))
-;;(display top10)
-;;(movie (is_released no) (score ?score) (title ?title))
-;;=>
-;;(if(= ?score ?*top9score*)then(printout t ?title " " ?score crlf)))
-
-(defrule displaytop10
-(declare (salience -50))
+?count <-(count ?counter)
+(test (> ?counter 0))
 (display top10)
-(movie (is_released no) (score ?score) (title ?title))
+?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
+(not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
 =>
-(if(>= ?score ?*top10score*)then(printout t ?title " " ?score crlf)))
+(printout t ?title " " ?score crlf)
+(retract ?top)
+(retract ?count)
+(assert (count (- ?counter 1)))
+(assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))))
 
-(defrule displaytop50
-(declare (salience -50))
-(display top50)
-(movie (is_released no) (score ?score) (title ?title))
-(test (>= ?score ?*top50score*))
+(defrule putback
+(declare (salience -40))
+?movie_temp<-(movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
 =>
-(printout t ?title crlf))
+(assert (movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
+(retract ?movie_temp))
 
 (defrule displayall
-(declare (salience -50))
+(declare (salience -30))
 (display all)
-(movie (title ?title) (is_released no))
+?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
+(not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
+?count <-(count ?counter)
 =>
-(printout t ?title crlf))
+(printout t ?title " " ?score crlf)
+(retract ?top)
+(assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
+(retract ?count)
+(assert (count (+ ?counter 1))))
 
 
 
@@ -494,9 +411,11 @@ then
 (bind ?line (read))
 (switch ?line
 (case 1 then
-(assert (display top10)))
+(assert (display top10))
+(assert (count 10)))
 (case 2 then
-(assert (display all)))
+(assert (display all))
+(assert (count 0)))
 (case 3 then
 (assert (op continue)))
 (case 4 then
