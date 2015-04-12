@@ -177,7 +177,7 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_casts (explode$ ?line))
-(printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
+(printout t "1. top10 2. display all 3. restart 4. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
@@ -191,12 +191,10 @@ then
 (printout t crlf)
 (printout t "==========================================all=========================================" crlf))
 (case 3 then
-(assert (op continue)))
-(case 4 then
 (retract ?state)
 (assert (state end))
 (assert (op continue)))
-(case 5 then
+(case 4 then
 (halt))))
 
 
