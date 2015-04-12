@@ -106,15 +106,19 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_tags (explode$ ?line))
-(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
 (assert (display top10))
-(assert (count 10)))
+(assert (count 10))
+(printout t crlf)
+(printout t "=========================================top10=========================================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 0)))
+(assert (count 209))
+(printout t crlf)
+(printout t "==========================================all=========================================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
@@ -173,15 +177,19 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_casts (explode$ ?line))
-(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
 (assert (display top10))
-(assert (count 10)))
+(assert (count 10))
+(printout t crlf)
+(printout t "=========================================top10=========================================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 0)))
+(assert (count 209))
+(printout t crlf)
+(printout t "==========================================all=========================================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
@@ -443,15 +451,19 @@ then
 (declare (salience 5))
 ?state <-(state category)
 =>
-(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
 (assert (display top10))
-(assert (count 10)))
+(assert (count 10))
+(printout t crlf)
+(printout t "=========================================top10=========================================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 209)))
+(assert (count 209))
+(printout t crlf)
+(printout t "==========================================all=========================================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
