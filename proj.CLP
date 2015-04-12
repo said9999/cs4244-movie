@@ -487,10 +487,10 @@ then
 
 
 (defrule category_display
-(declare (salience 10))
+(declare (salience 5))
 ?state <-(state category)
 =>
-(printout t "1. top10 2. all 3. continue 4. end" crlf)
+(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
@@ -502,11 +502,13 @@ then
 (case 4 then
 (retract ?state)
 (assert (state end))
-(assert (op continue)))))
+(assert (op continue)))
+(case 5 then
+(halt))))
 
 
 (defrule destruct_control_variable
-(declare (salience 5))
+(declare (salience 10))
 (state category)
 ?f1<-(loop1 ?loop1&:(= ?loop1 3))
 ?f2<-(loop  ?loop&:(= ?loop 3))
