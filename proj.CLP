@@ -1,61 +1,3 @@
-(deftemplate movie
-(slot index)
-(slot title)
-(multislot categories)
-(multislot tags)
-(multislot casts)
-(slot date)
-(slot is_released (allowed-symbols yes no))
-(slot rate (default 0))
-(slot score (default 0))
-)
-
-(deftemplate movie_temp
-(slot index)
-(slot title)
-(multislot categories)
-(multislot tags)
-(multislot casts)
-(slot date)
-(slot is_released (allowed-symbols yes no))
-(slot rate (default 0))
-(slot score (default 0))
-)
-
-(defglobal
-?*x* = 1
-?*ct* = 0
-?*list* = (create$))
-
-(deffacts movie2014
-(movie (index 1)(title "Planes: Fire &amp; Rescue")(categories Animation Adventure Comedy)(tags "fire" "rescue" "battle" "forest" "firefighting")(casts "Dane Cook" "Ed Harris" "Julie Bowen")(date "4 September 2014")(is_released yes)(rate 5.9)(score 0))
-(movie (index 2)(title "A Walk Among the Tombstones")(categories Crime Drama Mystery)(tags "drug dealer" "private investigator" "brooklyn new york city" "violence" "murder of wife")(casts "Liam Neeson" "Dan Stevens" "David Harbour")(date "18 September 2014")(is_released yes)(rate 6.6)(score 0))
-(movie (index 3)(title "Lone Survivor")(categories Action Biography Drama)(tags "navy seal" "pashtunwali" "commando unit" "afghanistan" "fight")(casts "Peter Berg" "Mark Wahlberg" "Taylor Kitsch")(date "13 February 2014")(is_released yes)(rate 7.6)(score 0))
-(movie (index 4)(title "Ouija")(categories Horror)(tags "ouija" "spirit" "ouija board" "swimming pool" "drowning")(casts "Olivia Cooke" "Ana Coto" "Daren Kagasoff")(date "23 October 2014")(is_released yes)(rate 4.4)(score 0))
-(movie (index 5)(title "The Grand Budapest Hotel")(categories Adventure Comedy Drama)(tags "first person narration" "hotel" "painting" "mentor protege relationship" "pastry shop")(casts "Ralph Fiennes" "F. Murray Abraham" "Mathieu Amalric")(date "20 March 2014")(is_released yes)(rate 8.1)(score 0))
-(movie (index 6)(title "Neighbors")(categories Comedy)(tags "lesbian kiss" "sex in a chair" "fraternity" "friendship" "one word title")(casts "Seth Rogen" "Rose Byrne" "Zac Efron")(date "8 May 2014")(is_released no)(rate 6.4)(score 0))
-(movie (index 7)(title "Pompeii")(categories Action Adventure Drama)(tags "pompeii" "roman" "senator" "slave" "arena")(casts "Kit Harington" "Emily Browning" "Kiefer Sutherland")(date "20 February 2014")(is_released no)(rate 5.6)(score 0))
-(movie (index 8)(title "Into the Storm")(categories Action Thriller)(tags "storm" "tornado" "danger" "graduation" "storm chaser")(casts "Richard Armitage" "Sarah Wayne Callies" "Matt Walsh")(date "7 August 2014")(is_released no)(rate 5.9)(score 0))
-(movie (index 9)(title "Xi yan")(categories Comedy Drama Romance)(tags "marriage of convenience" "gay couple" "gay son" "marriage pressure" "asian man white man relationship")(casts "Ang Lee" "Neil Peng" "Winston Chao")(date "4 August 1993")(is_released no)(rate 7.7)(score 0))
-(movie (index 10)(title "Blended")(categories Comedy Romance)(tags "children" "date" "blind date" "daughter" "son")(casts "Ivan Menchell" "Adam Sandler" "Drew Barrymore")(date "5 June 2014")(is_released no)(rate 6.5)(score 0))
-)
-
-(deffacts movie2015
-(movie (index 11)(title "Foxcatcher")(categories Biography Drama Sport)(tags "domination" "olympics" "training" "brother" "wrestler")(casts "E. Max Frye" "Steve Carell" "Channing Tatum")(date "16 January 2015")(is_released no)(rate 7.2)(score 0))
-(movie (index 12)(title "Paul Blart: Mall Cop 2")(categories Action Comedy)(tags "sequel" "character name in title")(casts "Kevin James" "Nick Bakay" "Kevin James")(date "7 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 13)(title "Unlucky Plaza")(categories Comedy Crime Drama)(tags )(casts "Jeffrey Quizon" "Adrian Pang" "Judee Tan")(date "16 April 2015")(is_released no)(rate 6.9)(score 0))
-(movie (index 14)(title "Avengers: Age of Ultron")(categories Action Adventure Fantasy)(tags "marvel cinematic universe" "superhero team" "based on comic book" "superhero" "captain america")(casts "Joss Whedon" "Robert Downey Jr." "Chris Evans")(date "23 April 2015")(is_released no)(rate 0)(score 0))
-(movie (index 15)(title "Hot Pursuit")(categories Action Comedy)(tags )(casts "David Feeney" "Reese Witherspoon" "Sofía Vergara")(date "7 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 16)(title "Pitch Perfect 2")(categories Comedy Music)(tags "sequel" "number in title")(casts "Anna Kendrick" "Rebel Wilson" "Hailee Steinfeld")(date "14 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 17)(title "Pixels")(categories Action Comedy Sci-Fi)(tags "based on short film" "new york city" "one word title")(casts "Adam Sandler" "Kevin James" "Michelle Monaghan")(date "3 September 2015")(is_released no)(rate 0)(score 0))
-(movie (index 18)(title "Mad Max: Fury Road")(categories Action Adventure Thriller)(tags "inbetwequel" "peak oil" "dark future" "future" "post apocalypse")(casts "George Miller" "Brendan McCarthy" "Tom Hardy")(date "14 May 2015")(is_released no)(rate 0)(score 0))
-(movie (index 19)(title "Jurassic World")(categories Action Adventure Sci-Fi)(tags "theme park" "dinosaur" "t rex" "velociraptor" "genetic engineering")(casts "Chris Pratt" "Judy Greer" "Ty Simpkins")(date "11 June 2015")(is_released no)(rate 0)(score 0))
-(movie (index 20)(title "Minions")(categories Animation Comedy Family)(tags )(casts "Kyle Balda" "Chris Renaud" "Pierre Coffin")(date "18 June 2015")(is_released no)(rate 0)(score 0))
-)
-
-(deffacts default_fact
-(state movie))
-
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
@@ -68,6 +10,9 @@
 (retract ?state)
 (assert (state tag)))
 (case tag then
+(retract ?state)
+(assert (state cast)))
+(case cast then
 (retract ?state)
 (assert (state end)))
 (case end then
@@ -287,22 +232,26 @@ then
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;category;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; ; Yunjin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;category;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (deftemplate categoryRank
 (slot cat)
 (slot times (default 0))
 (slot average_score(default 0))
 )
 
+
 (deffacts category_list
 (categoryList))
 
-(deffacts loop_time
-(loop 0))
 
 (deffacts loop_time1
+(loop 0))
+
+
+(deffacts loop_time2
 (loop1 0))
+
 
 (deffunction insert_category_ranking (?ratings $?category)
 (if (> (length $?category) 0)
@@ -311,9 +260,16 @@ then
 (insert_category_ranking ?ratings (rest$ $?category))))
 
 
+(deffunction greater-predicate (?value1 ?value2)
+(> ?value1 ?value2))
+
+
+(deffunction equal-predicate (?value1 ?value2)
+(= ?value1 ?value2))
+
 
 (defrule compute_category_rank
-(declare (salience 35))
+(declare (salience 40))
 (state category)
 (favor ?index)
 (movie (index ?index) (categories $?cat) (rate ?rate))
@@ -322,7 +278,7 @@ then
 
 
 (defrule create_category_rank
-(declare (salience 30))
+(declare (salience 35))
 (state category)
 ?temp <- (categoryScore ?cat ?score)
 ?catList <- (categoryList $?list)
@@ -334,7 +290,7 @@ then
 (assert (categoryList (create$ $?list ?cat))))
 
 (defrule update_category_rank
-(declare (salience 25))
+(declare (salience 30))
 (state category)
 ?temp <- (categoryScore ?cat ?score)
 ?catList <- (categoryList $?list)
@@ -345,17 +301,8 @@ then
 (retract ?temp))
 
 
-
-(deffunction greater-predicate (?value1 ?value2)
-(> ?value1 ?value2))
-
-
-(deffunction equal-predicate (?value1 ?value2)
-(= ?value1 ?value2))
-
-
 (defrule find-max-value
-(declare (salience 20))
+(declare (salience 25))
 (state category)
 ?loop_time <- (loop ?loop)
 (test (< ?loop 3))
@@ -372,9 +319,8 @@ then
 (retract ?cate1))
 
 
-
 (defrule ask_category
-(declare (salience 15))
+(declare (salience 20))
 (state category)
 ?top <- (top_3 ?cat)
 ?high <- (loop1 ?loop)
@@ -389,9 +335,8 @@ then
 (assert (loop1 (+ ?loop 1))))
 
 
-
 (defrule destruct_temporary_fact
-(declare (salience 10))
+(declare (salience 15))
 (state category)
 ?f1 <-(categoryRank (cat ?cat) (times ?time) (average_score ?score))
 =>
@@ -399,7 +344,7 @@ then
 
 
 (defrule category_display
-(declare (salience 5))
+(declare (salience 10))
 ?state <-(state category)
 =>
 (printout t "1. top10 2. all 3. continue 4. end" crlf)
@@ -420,7 +365,7 @@ then
 
 
 (defrule destruct_control_variable
-(declare (salience 0))
+(declare (salience 5))
 (state category)
 ?f1<-(loop1 ?loop1&:(= ?loop1 3))
 ?f2<-(loop  ?loop&:(= ?loop 3))
