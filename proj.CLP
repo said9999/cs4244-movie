@@ -106,17 +106,23 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_tags (explode$ ?line))
-	(printout t "1. top10 2. all 3. continue 4. end" crlf)
-	(bind ?action (read))
-	(switch ?action
-		(case 1 then
-			(assert (display top10)))
-		(case 2 then
-			(assert (display all)))
-		(case 3 then
-			(assert (op continue)))
-		(case 4 then
-			(assert (restart)))))
+(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(bind ?line (read))
+(switch ?line
+(case 1 then
+(assert (display top10))
+(assert (count 10)))
+(case 2 then
+(assert (display all))
+(assert (count 0)))
+(case 3 then
+(assert (op continue)))
+(case 4 then
+(retract ?state)
+(assert (state end))
+(assert (op continue)))
+(case 5 then
+(halt))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAST;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftemplate cast_list
@@ -167,17 +173,24 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_casts (explode$ ?line))
-	(printout t "1. top10 2. all 3. continue 4. end" crlf)
-	(bind ?action (read))
-	(switch ?action
-		(case 1 then
-			(assert (display top10)))
-		(case 2 then
-			(assert (display all)))
-		(case 3 then
-			(assert (op continue)))
-		(case 4 then
-			(assert (restart)))))
+(printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
+(bind ?line (read))
+(switch ?line
+(case 1 then
+(assert (display top10))
+(assert (count 10)))
+(case 2 then
+(assert (display all))
+(assert (count 0)))
+(case 3 then
+(assert (op continue)))
+(case 4 then
+(retract ?state)
+(assert (state end))
+(assert (op continue)))
+(case 5 then
+(halt))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;compute score and display;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;define global
