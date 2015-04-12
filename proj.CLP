@@ -12,6 +12,9 @@
 (assert (state tag)))
 (case tag then
 (retract ?state)
+(assert (state cast)))
+(case cast then
+(retract ?state)
 (assert (state end)))
 (case end then
 (retract ?state)
