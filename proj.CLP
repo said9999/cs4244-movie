@@ -2,6 +2,7 @@
 ?state <- (state ?s)
 ?op <- (op continue)
 =>
+(printout t ?s crlf)
 (switch ?s
 (case movie then
 (retract ?state)
@@ -99,6 +100,7 @@ then
 (defrule continue_ask_tag
 	(test (= ?*count* 0))
 	?state <- (state tag_print)
+    ?state_current <- (state tag)
 	=>
 	(retract ?state)
 	(if (evenp ?*tag_index*)
@@ -122,7 +124,7 @@ then
 (case 3 then
 (assert (op continue)))
 (case 4 then
-(retract ?state)
+(retract ?state_current)
 (assert (state end))
 (assert (op continue)))
 (case 5 then
@@ -170,6 +172,7 @@ then
 (defrule continue_ask_cast
 	(test (= ?*count* 0))
 	?state <- (state cast_print)
+    ?state_current <- (state cast)
 	=>
 	(retract ?state)
 	(if (evenp ?*cast_index*)
@@ -191,7 +194,7 @@ then
 (printout t crlf)
 (printout t "==========================================all=========================================" crlf))
 (case 3 then
-(retract ?state)
+(retract ?state_current)
 (assert (state end))
 (assert (op continue)))
 (case 4 then
@@ -311,6 +314,7 @@ then
 (defrule post_display
 (declare (salience -50))
 ?display <-(display ?x)
+?state <- (state ?s)
 =>
 (printout t "1. top10 2. all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
@@ -327,6 +331,7 @@ then
 (assert (op continue)))
 (case 4 then
 (retract ?display)
+(retract ?state)
 (assert (state end))
 (assert (op continue)))
 (case 5 then
