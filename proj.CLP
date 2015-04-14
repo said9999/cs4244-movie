@@ -1,10 +1,11 @@
 (defrule start
 ?state <-(state movie)
 =>
+(printout t crlf)(printout t crlf)
+(printout t "=================================================================="crlf)
+(printout t "                       WELCOME TO CINEMA GURU                     "crlf)
+(printout t "=================================================================="crlf)
 (printout t crlf)
-(printout t "======================"crlf)
-(printout t "WELCOME TO CINEMA GURU"crlf)
-(printout t "======================"crlf)
 (printout t crlf))
 
 
@@ -117,6 +118,8 @@ then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_tags (explode$ ?line))
+(printout t crlf)(printout t crlf)
+(printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
@@ -124,12 +127,12 @@ then
 (assert (display top10))
 (assert (count 10))
 (printout t crlf)
-(printout t "=========================================top10=========================================" crlf))
+(printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
 (assert (count 209))
 (printout t crlf)
-(printout t "==========================================all=========================================" crlf))
+(printout t "==================================all==============================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
@@ -138,9 +141,9 @@ then
 (assert (op continue)))
 (case 5 then
 (printout t crlf)
-(printout t "==========================================" crlf)
-(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
-(printout t "==========================================" crlf)
+(printout t "==================================================================" crlf)
+(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
 
@@ -189,11 +192,14 @@ then
     ?state_current <- (state cast)
 	=>
 	(retract ?state)
+    (assert (continue f))
 	(if (evenp ?*cast_index*)
 		then
 		(printout t "" crlf))
 	(bind ?line (readline))
 	(insert_favor_casts (explode$ ?line))
+(printout t crlf)(printout t crlf)
+(printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. restart 4. end" crlf)
 (bind ?line (read))
 (switch ?line
@@ -201,21 +207,21 @@ then
 (assert (display top10))
 (assert (count 10))
 (printout t crlf)
-(printout t "=========================================top10=========================================" crlf))
+(printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 208))
+(assert (count 209))
 (printout t crlf)
-(printout t "==========================================all=========================================" crlf))
+(printout t "==================================all==============================" crlf))
 (case 3 then
 (retract ?state_current)
 (assert (state end))
 (assert (op continue)))
 (case 4 then
 (printout t crlf)
-(printout t "==========================================" crlf)
-(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
-(printout t "==========================================" crlf)
+(printout t "==================================================================" crlf)
+(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
 
@@ -330,39 +336,68 @@ then
 (assert (count (- ?counter 1))))
 
 
-(defrule post_display
+(defrule post_display1
 (declare (salience -50))
 ?display <-(display ?x)
-?state <- (state ?s)
+?state_current <- (state ?s)
 =>
-(printout t "=======================================================================================" crlf)
+(printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
 (case 1 then
-(printout t crlf)
-(printout t "=========================================top10=========================================" crlf)
-(retract ?display)
 (assert (display top10))
-(assert (count 10)))
-(case 2 then
+(assert (count 10))
 (printout t crlf)
-(printout t "=========================================all===========================================" crlf)
-(retract ?display)
+(printout t "=================================top10=============================" crlf))
+(case 2 then
 (assert (display all))
-(assert (count 209)))
+(assert (count 209))
+(printout t crlf)
+(printout t "==================================all==============================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
-(retract ?display)
-(retract ?state)
+(retract ?state_current)
 (assert (state end))
 (assert (op continue)))
 (case 5 then
 (printout t crlf)
-(printout t "==========================================" crlf)
-(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
-(printout t "==========================================" crlf)
+(printout t "==================================================================" crlf)
+(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "==================================================================" crlf)
+(printout t crlf)
+(halt))))
+
+(defrule post_display2
+(declare (salience -50))
+?display <-(display ?x)
+?state_current <- (state ?s)
+(continue f)
+=>
+(printout t "==================================================================" crlf)
+(printout t "1. top10 2. display all 3. restart 4. end" crlf)
+(bind ?line (read))
+(switch ?line
+(case 1 then
+(assert (display top10))
+(assert (count 10))
+(printout t crlf)
+(printout t "=================================top10=============================" crlf))
+(case 2 then
+(assert (display all))
+(assert (count 209))
+(printout t crlf)
+(printout t "==================================all==============================" crlf))
+(case 3 then
+(retract ?state_current)
+(assert (state end))
+(assert (op continue)))
+(case 4 then
+(printout t crlf)
+(printout t "==================================================================" crlf)
+(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
 
@@ -481,8 +516,10 @@ then
 
 (defrule category_display
 (declare (salience 5))
-?state <-(state category)
+?state_current <-(state category)
 =>
+(printout t crlf)(printout t crlf)
+(printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
 (bind ?line (read))
 (switch ?line
@@ -490,23 +527,23 @@ then
 (assert (display top10))
 (assert (count 10))
 (printout t crlf)
-(printout t "=========================================top10=========================================" crlf))
+(printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
 (assert (count 209))
 (printout t crlf)
-(printout t "==========================================all=========================================" crlf))
+(printout t "==================================all==============================" crlf))
 (case 3 then
 (assert (op continue)))
 (case 4 then
-(retract ?state)
+(retract ?state_current)
 (assert (state end))
 (assert (op continue)))
 (case 5 then
 (printout t crlf)
-(printout t "==========================================" crlf)
-(printout t "THANKY YOU FOR USING CINEMA GURU, GOODBYE!" crlf)
-(printout t "==========================================" crlf)
+(printout t "==================================================================" crlf)
+(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
 
