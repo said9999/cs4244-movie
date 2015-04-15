@@ -12,24 +12,13 @@
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
+?list <- (sequence_list ?head $?tail)
 =>
-(switch ?s
-(case movie then
-(retract ?state)
-(assert (state category)))
-(case category then
-(retract ?state)
-(assert (state tag)))
-(case tag then
-(retract ?state)
-(assert (state cast)))
-(case cast then
-(retract ?state)
-(assert (state end)))
-(case end then
-(retract ?state)
-(reset)))
-(retract ?op))
+(retract ?state ?op ?list)
+(assert (state ?head))
+(assert (sequence_list ?tail ?head))
+(if (eq ?s end)
+ then (reset)))
 
 (deffunction insert_favor_movies (?movielist)
 (if (> (length ?movielist) 0)
