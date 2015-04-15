@@ -326,12 +326,14 @@ then
 
 
 (defrule post_display1
-(declare (salience -50))
+(declare (salience -40))
 ?display <-(display ?x)
 ?state_current <- (state ?s)
+(not (continue f))
 =>
 (printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. continue 4. restart 5. end" crlf)
+(retract ?display)
 (bind ?line (read))
 (switch ?line
 (case 1 then
@@ -341,7 +343,7 @@ then
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 209))
+(assert (count 192))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
@@ -366,6 +368,7 @@ then
 =>
 (printout t "==================================================================" crlf)
 (printout t "1. top10 2. display all 3. restart 4. end" crlf)
+(retract ?display)
 (bind ?line (read))
 (switch ?line
 (case 1 then
@@ -375,7 +378,7 @@ then
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 209))
+(assert (count 192))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
