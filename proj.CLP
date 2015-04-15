@@ -337,7 +337,7 @@ then
 
 
 (defrule post_display1
-(declare (salience -50))
+(declare (salience -40))
 ?display <-(display ?x)
 ?state_current <- (state ?s)
 =>
