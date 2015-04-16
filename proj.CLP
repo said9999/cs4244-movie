@@ -41,6 +41,7 @@ then
 (slot index)
 (slot iscatcomputed (allowed-symbols yes no) (default no))
 (slot istagcomputed (allowed-symbols yes no) (default no))
+(slot iscastcomputed (allowed-symbols yes no) (default no))
 )
 
 (defrule assertmoviecomputed
@@ -114,16 +115,19 @@ then
 (switch ?line
 (case 1 then
 (assert (display top10))
+(assert (state tagcompute))
 (assert (count 10))
 (printout t crlf)
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
+(assert (state tagcompute))
 (assert (count 209))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
-(assert (op continue)))
+(assert (op continue))
+(assert (state tagcompute)))
 (case 4 then
 (retract ?state_current)
 (assert (state end))
@@ -194,11 +198,13 @@ then
 (switch ?line
 (case 1 then
 (assert (display top10))
+(assert (state castcompute))
 (assert (count 10))
 (printout t crlf)
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
+(assert (state castcompute))
 (assert (count 209))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
@@ -226,7 +232,17 @@ then
 ?*tagscore2* = 0
 ?*tagscore3* = 0
 ?*tagscore4* = 0
-?*tagscore5* = 0)
+?*tagscore5* = 0
+?*castname1* = ""
+?*castname2* = ""
+?*castname3* = ""
+?*castname4* = ""
+?*castname5* = ""
+?*castscore1* = 0
+?*castscore2* = 0
+?*castscore3* = 0
+?*castscore4* = 0
+?*castscore5* = 0)
 
 
 ;;compute category score
@@ -277,6 +293,7 @@ then
 (defrule computetagscore
 (declare (salience -20))
 (display ?x)
+(state tagcompute)
 ?movie<-(movie (index ?i) (tags $?tags) (is_released no) (score ?originalscore))
 ?moviecomputed<-(moviecomputed (index ?i) (istagcomputed no))
 =>
@@ -289,8 +306,51 @@ then
 (modify ?movie (score ?total))
 (modify ?moviecomputed (istagcomputed yes)))
 
-(defrule displaytopN
+;; get cast name by index
+(defrule getcastname
+(declare (salience -10))
+(display ?x)
+(cast ?index1 1)
+(cast ?index2 2)
+(cast ?index3 3)
+(cast ?index4 4)
+(cast ?index5 5)
+(cast_list (cast_name ?name1) (cast_index ?index1))
+(cast_list (cast_name ?name2) (cast_index ?index2))
+(cast_list (cast_name ?name3) (cast_index ?index3))
+(cast_list (cast_name ?name4) (cast_index ?index4))
+(cast_list (cast_name ?name5) (cast_index ?index5))
+=>
+(bind ?*castname1* ?name1)
+(bind ?*castname2* ?name2)
+(bind ?*castname3* ?name3)
+(bind ?*castname4* ?name4)
+(bind ?*castname5* ?name5)
+(bind ?*castscore1* 1)
+(bind ?*castscore2* 2)
+(bind ?*castscore3* 3)
+(bind ?*castscore4* 4)
+(bind ?*castscore5* 5))
+
+;; compute cast score
+(defrule computecastscore
 (declare (salience -30))
+(display ?x)
+(state castcompute)
+?movie<-(movie (index ?i) (casts $?casts) (is_released no) (score ?originalscore))
+?moviecomputed<-(moviecomputed (index ?i) (iscastcomputed no))
+=>
+(bind ?total ?originalscore)
+(if(member$ ?*castname1* $?casts)then(bind ?total (+ ?total ?*castscore1*)))
+(if(member$ ?*castname2* $?casts)then(bind ?total (+ ?total ?*castscore2*)))
+(if(member$ ?*castname3* $?casts)then(bind ?total (+ ?total ?*castscore3*)))
+(if(member$ ?*castname4* $?casts)then(bind ?total (+ ?total ?*castscore4*)))
+(if(member$ ?*castname5* $?casts)then(bind ?total (+ ?total ?*castscore5*)))
+(modify ?movie (score ?total))
+(modify ?moviecomputed (iscastcomputed yes)))
+
+(defrule displaytopN
+(declare (salience -40))
 ?count <-(count ?counter)
 (test (> ?counter 0))
 (display top10)
@@ -304,14 +364,14 @@ then
 (assert (movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))))
 
 (defrule putback
-(declare (salience -40))
+(declare (salience -50))
 ?movie_temp<-(movie_temp (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
 =>
 (assert (movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score)))
 (retract ?movie_temp))
 
 (defrule displayall
-(declare (salience -30))
+(declare (salience -40))
 (display all)
 ?top<-(movie (index ?i) (title ?title) (categories $?cat) (tags $?tag) (casts $?cast) (date ?date) (is_released no) (rate ?rate) (score ?score))
 (not (movie (is_released no) (score ?score1&:(> ?score1 ?score))))
@@ -326,7 +386,7 @@ then
 
 
 (defrule post_display1
-(declare (salience -40))
+(declare (salience -50))
 ?display <-(display ?x)
 ?state_current <- (state ?s)
 (not (continue f))
@@ -361,7 +421,7 @@ then
 (halt))))
 
 (defrule post_display2
-(declare (salience -50))
+(declare (salience -60))
 ?display <-(display ?x)
 ?state_current <- (state ?s)
 (continue f)
