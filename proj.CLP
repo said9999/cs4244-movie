@@ -240,7 +240,7 @@ then
 ?movie<-(movie (index ?i) (categories $?cats) (is_released no) (rate ?rate) (score ?originalscore))
 ?moviecomputed<-(moviecomputed (index ?i) (iscatcomputed no))
 =>
-(bind ?total ?rate)
+(bind ?total (* ?rate 0.3))
 (if(member$ ?cat1 $?cats)then(bind ?total (+ ?total ?score1)))
 (if(member$ ?cat2 $?cats)then(bind ?total (+ ?total ?score2)))
 (if(member$ ?cat3 $?cats)then(bind ?total (+ ?total ?score3)))
