@@ -129,19 +129,19 @@ then
 (switch ?line
 (case 1 then
 (assert (display top10))
-(assert (state tagcompute))
+(assert (compute tagcompute))
 (assert (count 10))
 (printout t crlf)
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (state tagcompute))
+(assert (compute tagcompute))
 (assert (count 209))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
 (assert (op continue))
-(assert (state tagcompute)))
+(assert (compute tagcompute)))
 (case 4 then
 (retract ?state_current)
 (assert (state end))
@@ -220,13 +220,13 @@ then
 (switch ?line
 (case 1 then
 (assert (display top10))
-(assert (state castcompute))
+(assert (compute castcompute))
 (assert (count 10))
 (printout t crlf)
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (state castcompute))
+(assert (compute castcompute))
 (assert (count 209))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
@@ -314,7 +314,7 @@ then
 (defrule computetagscore
 (declare (salience -20))
 (display ?x)
-(state tagcompute)
+(compute tagcompute)
 ?movie<-(movie (index ?i) (tags $?tags) (is_released no) (score ?originalscore))
 ?moviecomputed<-(moviecomputed (index ?i) (istagcomputed no))
 =>
@@ -357,7 +357,7 @@ then
 (defrule computecastscore
 (declare (salience -30))
 (display ?x)
-(state castcompute)
+(compute castcompute)
 ?movie<-(movie (index ?i) (casts $?casts) (is_released no) (score ?originalscore))
 ?moviecomputed<-(moviecomputed (index ?i) (iscastcomputed no))
 =>
