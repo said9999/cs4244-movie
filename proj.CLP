@@ -24,7 +24,7 @@
 (if (> (length ?movielist) 0)
 then
 (assert (favor (first$ ?movielist)))
-(bind ?*favor_count* (+ ?*favor_count* 1)) ;;modified by chenxi
+(bind ?*favor_count* (+ ?*favor_count* 1))
 (insert_favor_movies (rest$ ?movielist))))
 
 (defrule ask_movies
@@ -50,11 +50,20 @@ then
 =>
 (assert (moviecomputed (index ?i))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;TAG;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;tag;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftemplate tag_list
 	(slot tag_name)
 	(slot tag_index))
 
+;; This function is to aligen and format the ouput of tags and casts
+(deffunction format_display (?content ?index)
+	(loop-for-count (?cnt 1 (- (- 40 (str-length ?content)) (str-length (implode$ (create$ ?index))))) do
+		(printout t " "))
+	(if (evenp ?index)
+		then
+		(printout t "" crlf)))
+
+;; ask the user to choose 5 favorite tags ordered by preference
 (defrule ask_tag
 	(state tag)
 	(exists (favor ?))
@@ -64,14 +73,8 @@ then
 	(bind ?*count* ?*favor_count*)
 	(assert (state tag_print)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(deffunction format_display (?content ?index)
-	(loop-for-count (?cnt 1 (- (- 30 (str-length ?content)) (str-length (implode$ (create$ ?index))))) do
-		(printout t " "))
-	(if (evenp ?index)
-		then
-		(printout t "" crlf)))
-
+;; insert tags to the tag template, there is no duplicate in the template
+;; format the tags and print to the screen
 (defrule insert_tag
 	(state tag_print)
 	(favor ?f)
@@ -89,13 +92,22 @@ then
 		(format_display ?curtag ?*tag_index*)
 		(bind ?*tag_index* (+ ?*tag_index* 1))))
 	(bind ?*count* (- ?*count* 1)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; This function is to insert facts indicating score of tags according to preference
+;; Score 5 will be assigned to the most favortie tag, 4 will be assigned to the second favorite tag, etc
+;; If the user enter more than 5 tags, only the first 5 will be added
 (deffunction insert_favor_tags (?taglist)
-	(loop-for-count (?cnt 1 (length ?taglist)) do
+	(if (> (length ?taglist) 5)
+		then
+		(bind ?no_of_tags 5)
+		else
+		(bind ?no_of_tags (length ?taglist)))
+
+	(loop-for-count (?cnt 1 ?no_of_tags) do
 		(bind ?cur (nth$ ?cnt ?taglist))
 		(assert (tag ?cur (- 6 ?cnt)))))
 
+;; read user input and add facts that indicating score of chosen tags
 (defrule continue_ask_tag
 	(test (= ?*count* 0))
 	?state <- (state tag_print)
@@ -136,11 +148,12 @@ then
 (printout t crlf)
 (halt))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CAST;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;cast;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftemplate cast_list
 	(slot cast_name)
 	(slot cast_index))
 
+;; ask the user to choose 5 favorite casts
 (defrule ask_cast
 	(state cast)
 	(exists (favor ?))
@@ -150,7 +163,7 @@ then
 	(bind ?*count* ?*favor_count*)
 	(assert (state cast_print)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; insert cast to the cast_list template and print casts on the screen
 (defrule insert_cast
 	(state cast_print)
 	(favor ?f)
@@ -169,12 +182,19 @@ then
 		(bind ?*cast_index* (+ ?*cast_index* 1))))
 	(bind ?*count* (- ?*count* 1)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; This function is to insert facts indicating score of casts according to preference
 (deffunction insert_favor_casts (?castlist)
-	(loop-for-count (?cnt 1 (length ?castlist)) do
+	(if (> (length ?castlist) 5)
+		then
+		(bind ?no_of_casts 5)
+		else
+		(bind ?no_of_casts (length ?castlist)))
+
+	(loop-for-count (?cnt 1 ?no_of_casts) do
 		(bind ?cur (nth$ ?cnt ?castlist))
 		(assert (cast ?cur (- 6 ?cnt)))))
 
+;; read user input
 (defrule continue_ask_cast
 	(test (= ?*count* 0))
 	?state <- (state cast_print)
@@ -213,7 +233,6 @@ then
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;compute score and display;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;define global
