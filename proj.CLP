@@ -136,7 +136,7 @@ then
 (case 2 then
 (assert (display all))
 (assert (compute tagcompute))
-(assert (count 209))
+(assert (count 192))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
@@ -149,7 +149,7 @@ then
 (case 5 then
 (printout t crlf)
 (printout t "==================================================================" crlf)
-(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "            THANK YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
@@ -227,7 +227,7 @@ then
 (case 2 then
 (assert (display all))
 (assert (compute castcompute))
-(assert (count 209))
+(assert (count 192))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
@@ -237,7 +237,7 @@ then
 (case 4 then
 (printout t crlf)
 (printout t "==================================================================" crlf)
-(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "            THANK YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
@@ -436,7 +436,7 @@ then
 (case 5 then
 (printout t crlf)
 (printout t "==================================================================" crlf)
-(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "            THANK YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
@@ -469,7 +469,7 @@ then
 (case 4 then
 (printout t crlf)
 (printout t "==================================================================" crlf)
-(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "            THANK YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
@@ -603,7 +603,7 @@ then
 (printout t "=================================top10=============================" crlf))
 (case 2 then
 (assert (display all))
-(assert (count 209))
+(assert (count 192))
 (printout t crlf)
 (printout t "==================================all==============================" crlf))
 (case 3 then
@@ -615,7 +615,7 @@ then
 (case 5 then
 (printout t crlf)
 (printout t "==================================================================" crlf)
-(printout t "            THANKY YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
+(printout t "            THANK YOU FOR USING CINEMA GURU, GOODBYE!            " crlf)
 (printout t "==================================================================" crlf)
 (printout t crlf)
 (halt))))
