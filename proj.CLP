@@ -8,7 +8,7 @@
 (printout t crlf)
 (printout t crlf))
 
-
+;; control knowledge
 (defrule map
 ?state <- (state ?s)
 ?op <- (op continue)
@@ -20,6 +20,7 @@
 (if (eq ?s end)
  then (reset)))
 
+;; help method to insert movie index
 (deffunction insert_favor_movies (?movielist)
 (if (> (length ?movielist) 0)
 then
@@ -27,6 +28,7 @@ then
 (bind ?*favor_count* (+ ?*favor_count* 1))
 (insert_favor_movies (rest$ ?movielist))))
 
+;; ask what movies users watched in the last year
 (defrule ask_movies
 (state movie)
 (initial-fact)
@@ -259,7 +261,7 @@ then
 ?movie<-(movie (index ?i) (categories $?cats) (is_released no) (rate ?rate) (score ?originalscore))
 ?moviecomputed<-(moviecomputed (index ?i) (iscatcomputed no))
 =>
-(bind ?total ?rate)
+(bind ?total (* ?rate 0.3))
 (if(member$ ?cat1 $?cats)then(bind ?total (+ ?total ?score1)))
 (if(member$ ?cat2 $?cats)then(bind ?total (+ ?total ?score2)))
 (if(member$ ?cat3 $?cats)then(bind ?total (+ ?total ?score3)))
